@@ -32,9 +32,12 @@ function createQuote(quote) {
   deleteBtn.className = 'btn-danger';
   deleteBtn.textContent = 'Delete';
   deleteBtn.addEventListener('click', deleteQuote);
+
+  const edit = document.createElement('button');
+  edit.textContent = 'Edit';
   
   const block = document.createElement('blockquote');
-  block.append(p, footer, br, success, deleteBtn);
+  block.append(p, footer, br, success, deleteBtn, edit);
   
   const li = document.createElement('li');
   li.className = 'quote-card';
