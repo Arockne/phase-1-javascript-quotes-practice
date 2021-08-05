@@ -30,12 +30,14 @@ function createQuote(quote) {
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'btn-danger';
   deleteBtn.textContent = 'Delete';
+  deleteBtn.addEventListener('click', deleteQuote);
   
   const block = document.createElement('blockquote');
   block.append(p, footer, br, success, deleteBtn);
   
   const li = document.createElement('li');
   li.className = 'quote-card';
+  li.id = quote.id;
   li.appendChild(block);
   
   document.querySelector('#quote-list').appendChild(li);
@@ -64,6 +66,18 @@ function addNewQuote(quoteObj) {
   })
   .then(resp => resp.json())
   .then(createQuote);
+}
+
+function deleteQuote(e) {
+  const quote = e.target.parentNode.parentNode;
+  quote.remove()
+  fetch(`http://localhost:3000/quotes/${quote.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json'
+    }
+  })
+  .then(resp => console.log(resp));
 }
 
 function init() {
