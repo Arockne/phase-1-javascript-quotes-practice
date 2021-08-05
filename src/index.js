@@ -35,6 +35,7 @@ function createQuote(quote) {
 
   const edit = document.createElement('button');
   edit.textContent = 'Edit';
+  edit.addEventListener('click', editQuote);
   
   const block = document.createElement('blockquote');
   block.append(p, footer, br, success, deleteBtn, edit);
@@ -105,6 +106,57 @@ function saveLikes(likeObject) {
     },
     body: JSON.stringify(likeObject)
   })
+}
+
+function editQuote() {
+  const quoteElement = this.parentNode.querySelector('.mb-0');
+  const quote = quoteElement.textContent;
+  const authorElement = this.parentNode.querySelector('footer');
+  const author = authorElement.textContent;
+  
+  const formElements = `
+      <label for="edit-quote">Quote</label>
+      <input name="quote" type="text" id="edit-quote" value="${quote}">
+      <br>
+      <label for="edit-author">Author</label>
+      <input name="author" type="text" id="edit-author" value="${author}">
+      <input type="submit" value="Edit Quote">
+  `
+  const form = document.createElement('form');
+  form.innerHTML = formElements;
+  form.addEventListener('submit', handleEdit);
+
+  quoteElement.style.display = 'none';
+  authorElement.style.display = 'none';
+  this.style.display = 'none';
+  this.parentNode.insertBefore(form, this.parentNode.children[3])
+}
+
+function handleEdit(e) {
+  e.preventDefault();
+  const quoteEdit = this.querySelector('#edit-quote').value;
+  const authorEdit = this.querySelector('#edit-author').value;
+  const id = this.parentNode.parentNode.id;
+  saveEdit({
+    quote: quoteEdit, 
+    author: authorEdit, 
+    id: id
+  });
+  
+  const displayNone = this.parentNode.querySelectorAll('[style]');
+  displayNone.forEach(e => e.style.display = 'revert');
+  this.remove();
+}
+
+function saveEdit({quote, author, id}) {
+  fetch(`http://localhost:3000/quotes/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({quote, author})
+  })
+  .then(resp => console.log(resp));
 }
 
 function init() {
