@@ -22,6 +22,7 @@ function createQuote(quote) {
   const success = document.createElement('button');
   success.className = 'btn-success';
   success.textContent = 'Likes: '
+  success.addEventListener('click', updateLikes);
   
   const likes = document.createElement('span');
   likes.textContent = quote.likes.length;
@@ -74,10 +75,33 @@ function deleteQuote(e) {
   fetch(`http://localhost:3000/quotes/${quote.id}`, {
     method: 'DELETE',
     headers: {
-      'Content-type': 'application/json'
+      'Content-Type': 'application/json'
     }
   })
   .then(resp => console.log(resp));
+}
+
+function updateLikes(e) {
+  const id = Number(this.parentNode.parentNode.id);
+  const likes = this.querySelector('span');
+  likes.textContent = Number(likes.textContent) + 1;
+
+  const likeObject = {
+    quoteId: id,
+    createdAt: Date.now()
+  }
+
+  addLikes(likeObject);
+}
+
+function addLikes(likeObject) {
+  fetch('http://localhost:3000/likes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(likeObject)
+  })
 }
 
 function init() {
