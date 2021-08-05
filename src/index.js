@@ -143,6 +143,11 @@ function handleEdit(e) {
     id: id
   });
   
+  const quote = this.parentNode.querySelector('.mb-0');
+  quote.textContent = quoteEdit;
+  const author = this.parentNode.querySelector('footer');
+  author.textContent = authorEdit;
+  
   const displayNone = this.parentNode.querySelectorAll('[style]');
   displayNone.forEach(e => e.style.display = 'revert');
   this.remove();
