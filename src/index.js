@@ -91,10 +91,10 @@ function updateLikes(e) {
     createdAt: Date.now()
   }
 
-  addLikes(likeObject);
+  saveLikes(likeObject);
 }
 
-function addLikes(likeObject) {
+function saveLikes(likeObject) {
   fetch('http://localhost:3000/likes', {
     method: 'POST',
     headers: {
