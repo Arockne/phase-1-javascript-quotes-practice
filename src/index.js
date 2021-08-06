@@ -10,11 +10,13 @@ function renderQuotes(quotes) {
 }
 
 function getQuotesToSort() {
-  fetch('http://localhost:3000/quotes?_embed=likes')
+  fetch('http://localhost:3000/quotes?_sort=author&_embed=likes')
   .then(resp => resp.json())
-  .then(sortQuotes);
+  .then(renderQuotes);
 }
 
+//sorted by the client then the server
+/*
 function sortQuotes(quotes) {
   const copy = []
   quotes.forEach(quote => {
@@ -36,6 +38,7 @@ function sortByName(a, b) {
   }
   return 0;
 }
+*/
 
 function sortQuotesButton() {
   const sortButton = document.createElement('button');
