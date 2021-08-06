@@ -63,7 +63,8 @@ function createQuote(quote) {
   success.addEventListener('click', updateLikes);
   
   const likes = document.createElement('span');
-  likes.textContent = quote.likes.length;
+  likes.textContent = quote.likes ? quote.likes.length : 0;
+  console.log(likes.textContent);
   success.appendChild(likes);
   
   const deleteBtn = document.createElement('button');
