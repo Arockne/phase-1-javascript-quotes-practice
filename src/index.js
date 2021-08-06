@@ -4,34 +4,25 @@ function getQuotes() {
   .then(renderQuotes);
 }
 
+
 function renderQuotes(quotes) {
   quotes.forEach(createQuote);
-  const sortButton = document.createElement('button');
-  sortButton.textContent = 'Sort By Name: Off';
-  document.querySelector('h1').insertAdjacentElement('afterend', sortButton);
-  
+}
+
+function getQuotesToSort() {
+  fetch('http://localhost:3000/quotes?_embed=likes')
+  .then(resp => resp.json())
+  .then(sortQuotes);
+}
+
+function sortQuotes(quotes) {
   const copy = []
   quotes.forEach(quote => {
     const copyObj = Object.assign({}, quote);
     copy.push(copyObj);
   })
   const sortedQuotes = copy.sort(sortByName);
-  
-  let sorted = false;
-  sortButton.addEventListener('click', () => {
-    console.log(sorted);
-    const quoteList = document.querySelector('#quote-list').querySelectorAll('li');
-    quoteList.forEach(quote => quote.remove());
-    if (!sorted) {
-      sorted = true;
-      sortButton.textContent = 'Sort By Name: On';
-      sortedQuotes.forEach(createQuote);
-    } else if (sorted) {
-      sorted = false;
-      sortButton.textContent = 'Sort By Name: off';
-      quotes.forEach(createQuote);
-    }
-  })
+  sortedQuotes.forEach(createQuote);
 }
 
 function sortByName(a, b) {
@@ -45,6 +36,27 @@ function sortByName(a, b) {
   }
   return 0;
 }
+
+function sortQuotesButton() {
+  const sortButton = document.createElement('button');
+  sortButton.textContent = 'Sort By Name: Off';
+  document.querySelector('h1').insertAdjacentElement('afterend', sortButton);
+  let sorted = false;
+  sortButton.addEventListener('click', e => {
+    const quoteList = document.querySelector('#quote-list').querySelectorAll('li');
+    quoteList.forEach(quote => quote.remove());
+    if (!sorted) {
+      sorted = true;
+      sortButton.textContent = 'Sort By Name: On';
+      getQuotesToSort();
+    } else if (sorted) {
+      sorted = false;
+      sortButton.textContent = 'Sort By Name: off';
+      getQuotes();
+    }
+  })
+}
+
 
 function createQuote(quote) {
   const p = document.createElement('p');
@@ -64,7 +76,6 @@ function createQuote(quote) {
   
   const likes = document.createElement('span');
   likes.textContent = quote.likes ? quote.likes.length : 0;
-  console.log(likes.textContent);
   success.appendChild(likes);
   
   const deleteBtn = document.createElement('button');
@@ -163,6 +174,16 @@ function editQuote() {
   this.parentNode.insertBefore(form, this.parentNode.children[3])
 }
 
+function saveEdit({quote, author, id}) {
+  fetch(`http://localhost:3000/quotes/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({quote, author})
+  })
+}
+
 function handleEdit(e) {
   e.preventDefault();
   const quoteEdit = this.querySelector('#edit-quote').value;
@@ -187,16 +208,6 @@ function handleEdit(e) {
   this.remove();
 }
 
-function saveEdit({quote, author, id}) {
-  fetch(`http://localhost:3000/quotes/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({quote, author})
-  })
-  .then(resp => console.log(resp));
-}
 
 function createQuoteEditForm(quote, author) {
   const labelForQuote = document.createElement('label');
@@ -230,9 +241,12 @@ function createQuoteEditForm(quote, author) {
   return form;
 }
 
+
 function init() {
+  sortQuotesButton()
   getQuotes();
   saveNewQuote();
+  getQuotesToSort();
 }
 
 init();
