@@ -243,10 +243,9 @@ function createQuoteEditForm(quote, author) {
 
 
 function init() {
-  sortQuotesButton()
   getQuotes();
+  sortQuotesButton()
   saveNewQuote();
-  getQuotesToSort();
 }
 
 init();
