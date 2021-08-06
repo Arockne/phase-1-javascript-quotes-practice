@@ -125,7 +125,8 @@ function editQuote() {
   const form = document.createElement('form');
   form.innerHTML = formElements;
   form.addEventListener('submit', handleEdit);
-
+  
+  //Hides elements for edit
   quoteElement.style.display = 'none';
   authorElement.style.display = 'none';
   this.style.display = 'none';
@@ -137,17 +138,20 @@ function handleEdit(e) {
   const quoteEdit = this.querySelector('#edit-quote').value;
   const authorEdit = this.querySelector('#edit-author').value;
   const id = this.parentNode.parentNode.id;
+
   saveEdit({
     quote: quoteEdit, 
     author: authorEdit, 
     id: id
   });
   
+  //Quote edit inserts
   const quote = this.parentNode.querySelector('.mb-0');
   quote.textContent = quoteEdit;
   const author = this.parentNode.querySelector('footer');
   author.textContent = authorEdit;
   
+  //reverts all hidden quote elements
   const displayNone = this.parentNode.querySelectorAll('[style]');
   displayNone.forEach(e => e.style.display = 'revert');
   this.remove();
