@@ -114,16 +114,7 @@ function editQuote() {
   const authorElement = this.parentNode.querySelector('footer');
   const author = authorElement.textContent;
   
-  const formElements = `
-      <label for="edit-quote">Quote</label>
-      <input name="quote" type="text" id="edit-quote" value="${quote}">
-      <br>
-      <label for="edit-author">Author</label>
-      <input name="author" type="text" id="edit-author" value="${author}">
-      <input type="submit" value="Edit Quote">
-  `
-  const form = document.createElement('form');
-  form.innerHTML = formElements;
+  const form = createQuoteEditForm(quote, author);
   form.addEventListener('submit', handleEdit);
   
   //Hides elements for edit
@@ -166,6 +157,38 @@ function saveEdit({quote, author, id}) {
     body: JSON.stringify({quote, author})
   })
   .then(resp => console.log(resp));
+}
+
+function createQuoteEditForm(quote, author) {
+  const labelForQuote = document.createElement('label');
+  labelForQuote.setAttribute('for', 'edit-quote');
+  labelForQuote.textContent = 'Quote';
+
+  const quoteEdit = document.createElement('input');
+  quoteEdit.setAttribute('name', 'quote');
+  quoteEdit.setAttribute('type', 'text');
+  quoteEdit.id = 'edit-quote';
+  quoteEdit.value = quote;
+
+  const br = document.createElement('br');
+
+  const labelForAuthor = document.createElement('label');
+  labelForAuthor.setAttribute('for', 'edit-author');
+  labelForAuthor.textContent = 'Author';
+
+  const authorEdit = document.createElement('input');
+  authorEdit.setAttribute('name', 'author');
+  authorEdit.setAttribute('type', 'text');
+  authorEdit.id = 'edit-author';
+  authorEdit.value = author;
+
+  const submit = document.createElement('input');
+  submit.setAttribute('type', 'submit');
+  submit.value = 'Edit Quote';
+  
+  const form = document.createElement('form');
+  form.append(labelForQuote, quoteEdit, br, labelForAuthor, authorEdit, submit);
+  return form;
 }
 
 function init() {
