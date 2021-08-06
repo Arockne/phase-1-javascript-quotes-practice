@@ -6,6 +6,44 @@ function getQuotes() {
 
 function renderQuotes(quotes) {
   quotes.forEach(createQuote);
+  const sortButton = document.createElement('button');
+  sortButton.textContent = 'Sort By Name: Off';
+  document.querySelector('h1').insertAdjacentElement('afterend', sortButton);
+  
+  const copy = []
+  quotes.forEach(quote => {
+    const copyObj = Object.assign({}, quote);
+    copy.push(copyObj);
+  })
+  const sortedQuotes = copy.sort(sortByName);
+  
+  let sorted = false;
+  sortButton.addEventListener('click', () => {
+    console.log(sorted);
+    const quoteList = document.querySelector('#quote-list').querySelectorAll('li');
+    quoteList.forEach(quote => quote.remove());
+    if (!sorted) {
+      sorted = true;
+      sortButton.textContent = 'Sort By Name: On';
+      sortedQuotes.forEach(createQuote);
+    } else if (sorted) {
+      sorted = false;
+      sortButton.textContent = 'Sort By Name: off';
+      quotes.forEach(createQuote);
+    }
+  })
+}
+
+function sortByName(a, b) {
+  const authorA = a.author.toUpperCase();
+  const authorB = b.author.toUpperCase();
+  if (authorA < authorB) {
+    return -1;
+  }
+  if (authorA > authorB) {
+    return 1;
+  }
+  return 0;
 }
 
 function createQuote(quote) {
